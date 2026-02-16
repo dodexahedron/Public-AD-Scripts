@@ -2,9 +2,10 @@
 
 ## CURRENT version
 
-v3.8 - 2026-02-07
+v3.9 - 2026-02-16
 
-REMARK: other versions of this script exist in other locations and/or in other forms. None of those clones are supported nor maintained by me in any way. Have issues? Update to the latest version available referenced in THIS page and try/test whatever you wanted to try/test. Still have issues? Raise an issue on [GITHUB](https://github.com/zjorz/Public-AD-Scripts/issues)
+> [!WARNING]
+> Other versions of this script exist in other locations and/or in other forms. None of those clones are supported nor maintained by me in any way. Have issues? Update to the latest version available referenced in THIS page and try/test whatever you wanted to try/test. Still have issues? Raise an issue on [GITHUB](https://github.com/zjorz/Public-AD-Scripts/issues)
 
 ## DISCLAIMER
 
@@ -23,9 +24,11 @@ REMARK: other versions of this script exist in other locations and/or in other f
 
 ## ORIGINAL AND OFFICIAL SOURCE(S)
 
-* PowerShell Script...:  <https://github.com/zjorz/Public-AD-Scripts/blob/master/Reset-KrbTgt-Password-For-RWDCs-And-RODCs.ps1>
-* XML File............: <https://github.com/zjorz/Public-AD-Scripts/blob/master/Reset-KrbTgt-Password-For-RWDCs-And-RODCs.xml>
-* Blog................: <https://jorgequestforknowledge.wordpress.com/category/active-directory-domain-services-adds/krbtgt-account/>
+| Topic             | Link                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------- |
+| PowerShell Script | <https://github.com/zjorz/Public-AD-Scripts/blob/master/Reset-KrbTgt-Password-For-RWDCs-And-RODCs.ps1>        |
+| XML File          | <https://github.com/zjorz/Public-AD-Scripts/blob/master/Reset-KrbTgt-Password-For-RWDCs-And-RODCs.xml>        |
+| Blog              | <https://jorgequestforknowledge.wordpress.com/category/active-directory-domain-services-adds/krbtgt-account/> |
 
 &nbsp;
 
@@ -45,7 +48,8 @@ REMARK: other versions of this script exist in other locations and/or in other f
 
 ## RECOMMENDATION - TESTING GUIDANCE
 
-!!! TEST FIRST IN A TEST ENVIRONMENT !!!
+> [!CAUTION]
+> !!! TEST FIRST IN A TEST ENVIRONMENT !!!
 
 I can imagine that you want to test this script to get confidence in what it does, how it does it, and of course see it working as if it was for real. Customization of the configuration XML would also be beneficial without impacting the real AD environment.
 
@@ -145,6 +149,8 @@ AUTOMATED TESTING (PASSWORD RESET ROUTINE)
 &nbsp;
 
 ## RELEASE NOTES
+* v3.9, 2026-02-16, Jorge de Almeida Pinto [MVP Identity And Access - Security / Lead Identity/Security Architect]:
+  * Code Improvement: Updated the function "portConnectionCheck" to better deal with IPV4/IPv6 Address combinations and also use the IPv4 Address over IPv6 Address
 * v3.8, 2026-02-07, Jorge de Almeida Pinto [MVP Identity And Access - Security / Lead Identity/Security Architect]:
   * Code Improvement: For the function "determineUserAccountForRSoP" updates were made to better process additional scenarios, like e.g. resolving the SID of an account that cannot be found in AD
 * v3.7, 2026-01-16, Jorge de Almeida Pinto [MVP Identity And Access - Security / Lead Identity/Security Architect]:

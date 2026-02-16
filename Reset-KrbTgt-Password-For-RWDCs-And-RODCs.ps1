@@ -21,7 +21,7 @@ Param (
 ###
 # Version Of Script
 ###
-$script:version = "v3.8, 2026-02-07"
+$script:version = "v3.9, 2026-02-16"
 
 <#
 	AUTHOR
@@ -102,6 +102,9 @@ $script:version = "v3.8, 2026-02-07"
 			checks for old LOG files and old ZIP files and deletes them accordingly!
 
 	RELEASE NOTES
+		v3.9, 2026-02-16, Jorge de Almeida Pinto [MVP Identity And Access - Security / Lead Identity/Security Architect]:
+			- Code Improvement: Updated the function "portConnectionCheck" to better deal with IPV4/IPv6 Address combinations and also use the IPv4 Address over IPv6 Address
+
 		v3.8, 2026-02-07, Jorge de Almeida Pinto [MVP Identity And Access - Security / Lead Identity/Security Architect]:
 			- Code Improvement: For the function "determineUserAccountForRSoP" updates were made to better process additional scenarios, like e.g. resolving the SID of an account that cannot be found in AD
 
@@ -3808,7 +3811,7 @@ Function portConnectionCheck {
 			This Code Checks If A Specific TCP Port Is Open/Reachable For The Defined Server
 
 		.PARAMETER serverIPOrFQDN
-			The IP Address Or FQDN Of The Server To Check Against.
+			The IPv4 Address Or FQDN Of The Server To Check Against.
 
 		.PARAMETER port
 			The Numeric Value For A Specific Port That Needs To Be Checked
@@ -3839,12 +3842,25 @@ Function portConnectionCheck {
 		# Validate If An IP Address Has Been Provided, And If NOT Try To Resolve The FQDN
 		$regexIPv4 = "^(?:(?:0?0?\d|0?[1-9]\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}(?:0?0?\d|0?[1-9]\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$"
 		If ($serverIPOrFQDN -notmatch $regexIPv4) {
-			# Test To See If The HostName Is Resolvable At All
+			# Get The DNS Host Entry And Resolve To An IPv4 Address
+			$dnsHostEntry = $null
+			$serverIPv4 = $null
 			Try {
-				[System.Net.Dns]::GetHostEntry($serverIPOrFQDN) > $null
+				$dnsHostEntry = [System.Net.Dns]::GetHostEntry($serverIPOrFQDN)
+				$serverIPv4 = ($dnsHostEntry.AddressList | Where-Object {$_.AddressFamily -eq "InterNetwork"}).IPAddressToString
+				# Write-Host "Host FQDN...........: $serverIPOrFQDN" # FOR TESTING ONLY
+				# Write-Host "Host IPv4 Address...: $serverIPv4"     # FOR TESTING ONLY
 			} Catch {
 				Return "ERROR"
 			}
+
+			# If No IPv4 Address Exists, Return An Error
+			If ([string]::IsNullOrEmpty($serverIPv4)) {
+				Return "ERROR"
+			}
+		} Else {
+			$serverIPv4 = $serverIPOrFQDN
+			# Write-Host "Host IPv4 Address...: $serverIPv4"     # FOR TESTING ONLY
 		}
 
 		# Test If The Server Is Reachable Over The Specified TCP Port
@@ -3852,7 +3868,7 @@ Function portConnectionCheck {
 		$tcpPortSocket = New-Object System.Net.Sockets.TcpClient
 
 		$portConnect = $null
-		$portConnect = $tcpPortSocket.BeginConnect($serverIPOrFQDN, $port, $null, $null)
+		$portConnect = $tcpPortSocket.BeginConnect($serverIPv4, $port, $null, $null)
 
 		$tcpPortWait = $null
 		$tcpPortWait = $portConnect.AsyncWaitHandle.WaitOne($timeOut, $false)
