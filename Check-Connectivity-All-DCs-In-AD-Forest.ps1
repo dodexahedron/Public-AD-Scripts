@@ -226,7 +226,6 @@ Clear-Host
 ###
 # Configure The Appropriate Screen And Buffer Size To Make Sure Everything Fits Nicely
 ###
-$uiConfig = (Get-Host).UI.RawUI
 $Global:Host.UI.RawUI.WindowTitle = '+++ CHECK CONNECTIVITY TARGETED DCS +++'
 $Script:poshParentProcess = [System.Environment]::GetCurrentProcess()
 $poshParentProcessName = $poshParentProcess.ProcessName
@@ -243,6 +242,7 @@ If ($poshParentProcessName -eq "WindowsTerminal") {
 
 	BREAK
 } Else {
+	$Local:uiConfig = (Get-Host).UI.RawUI
 	$uiConfig.ForegroundColor = "Yellow"
 	$uiConfigBufferSize = $uiConfig.BufferSize
 	$uiConfigBufferSize.Width = 400
