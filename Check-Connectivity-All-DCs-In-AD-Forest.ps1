@@ -2,6 +2,10 @@
 # Parameters Used By Script
 ###
 # N.A.
+param (
+	<# Allows the script to set window size, name, and formatting. #>
+	[switch]$EnableWindowLayoutControl
+)
 
 ###
 # Version Of Script
@@ -218,46 +222,52 @@ Function portConnectionCheck {
 	}
 }
 
-###
-# Configure The Appropriate Screen And Buffer Size To Make Sure Everything Fits Nicely
-###
-$Global:Host.UI.RawUI.WindowTitle = '+++ CHECK CONNECTIVITY TARGETED DCS +++'
-$Script:poshParentProcess = [System.Environment]::GetCurrentProcess()
-$poshParentProcessName = $poshParentProcess.ProcessName
-$poshParentProcessId = $poshParentProcess.Id
-If ($poshParentProcessName -eq "WindowsTerminal") {
-	Get-Process -Id $poshParentProcessId | Set-Window -X 100 -Y 100 -Width 1800 -Height 800 # -Passthru
-} ElseIf ($poshParentProcessName -like "*powershell_ise*") {
-	Write-Host ""
-	Write-Host "The Script Is Being Executed From A PowerShell_ISE Command Prompt Window, Which IS NOT Supported!..." -ForeGroundColor Red
-	Write-Host "Please Rerun The Script From A PowerShell Command Prompt Window!..." -ForeGroundColor Red
-	Write-Host ""
-	Write-Host "Aborting Script..." -ForeGroundColor Red
-	Write-Host ""
+Function Private:Set-HostWindowConfiguration {
+	###
+	# Configure The Appropriate Screen And Buffer Size To Make Sure Everything Fits Nicely
+	###
+	$Global:Host.UI.RawUI.WindowTitle = '+++ CHECK CONNECTIVITY TARGETED DCS +++'
+	$Script:poshParentProcess = [System.Environment]::GetCurrentProcess()
+	$poshParentProcessName = $poshParentProcess.ProcessName
+	$poshParentProcessId = $poshParentProcess.Id
+	If ($poshParentProcessName -eq "WindowsTerminal") {
+		Get-Process -Id $poshParentProcessId | Set-Window -X 100 -Y 100 -Width 1800 -Height 800 # -Passthru
+	} ElseIf ($poshParentProcessName -like "*powershell_ise*") {
+		Write-Host ""
+		Write-Host "The Script Is Being Executed From A PowerShell_ISE Command Prompt Window, Which IS NOT Supported!..." -ForeGroundColor Red
+		Write-Host "Please Rerun The Script From A PowerShell Command Prompt Window!..." -ForeGroundColor Red
+		Write-Host ""
+		Write-Host "Aborting Script..." -ForeGroundColor Red
+		Write-Host ""
 
-	BREAK
-} Else {
-	$Local:uiConfig = (Get-Host).UI.RawUI
-	$uiConfig.ForegroundColor = "Yellow"
-	$uiConfigBufferSize = $uiConfig.BufferSize
-	$uiConfigBufferSize.Width = 400
-	$uiConfigBufferSize.Height = 9999
-	$uiConfigScreenSizeMax = $uiConfig.MaxPhysicalWindowSize
-	$uiConfigScreenSizeMaxWidth = $uiConfigScreenSizeMax.Width
-	$uiConfigScreenSizeMaxHeight = $uiConfigScreenSizeMax.Height
-	$uiConfigScreenSize = $uiConfig.WindowSize
-	If ($uiConfigScreenSizeMaxWidth -lt 200) {
-		$uiConfigScreenSize.Width = $uiConfigScreenSizeMaxWidth
+		BREAK
 	} Else {
-		$uiConfigScreenSize.Width = 200
+		$Local:uiConfig = (Get-Host).UI.RawUI
+		$uiConfig.ForegroundColor = "Yellow"
+		$uiConfigBufferSize = $uiConfig.BufferSize
+		$uiConfigBufferSize.Width = 400
+		$uiConfigBufferSize.Height = 9999
+		$uiConfigScreenSizeMax = $uiConfig.MaxPhysicalWindowSize
+		$uiConfigScreenSizeMaxWidth = $uiConfigScreenSizeMax.Width
+		$uiConfigScreenSizeMaxHeight = $uiConfigScreenSizeMax.Height
+		$uiConfigScreenSize = $uiConfig.WindowSize
+		If ($uiConfigScreenSizeMaxWidth -lt 200) {
+			$uiConfigScreenSize.Width = $uiConfigScreenSizeMaxWidth
+		} Else {
+			$uiConfigScreenSize.Width = 200
+		}
+		If ($uiConfigScreenSizeMaxHeight -lt 75) {
+			$uiConfigScreenSize.Height = $uiConfigScreenSizeMaxHeight - 5
+		} Else {
+			$uiConfigScreenSize.Height = 75
+		}
+		$uiConfig.BufferSize = $uiConfigBufferSize
+		$uiConfig.WindowSize = $uiConfigScreenSize
 	}
-	If ($uiConfigScreenSizeMaxHeight -lt 75) {
-		$uiConfigScreenSize.Height = $uiConfigScreenSizeMaxHeight - 5
-	} Else {
-		$uiConfigScreenSize.Height = 75
-	}
-	$uiConfig.BufferSize = $uiConfigBufferSize
-	$uiConfig.WindowSize = $uiConfigScreenSize
+}
+
+if ($EnableWindowLayoutControl) {
+  Set-HostWindowConfiguration
 }
 
 ###
