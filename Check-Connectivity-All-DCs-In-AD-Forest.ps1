@@ -229,7 +229,7 @@ Clear-Host
 $randomNr = Get-Random -Minimum 1000 -Maximum 9999
 $windowTitle = "+++ CHECK CONNECTIVITY TARGETED DCS +++ ($randomNr)"
 $uiConfig = (Get-Host).UI.RawUI
-$host.UI.RawUI.WindowTitle = $windowTitle
+$Global:Host.UI.RawUI.WindowTitle = $windowTitle
 Start-Sleep -s 1
 $Script:poshParentProcess = [System.Environment]::GetCurrentProcess()
 $poshParentProcessName = $poshParentProcess.ProcessName
