@@ -219,11 +219,6 @@ Function portConnectionCheck {
 }
 
 ###
-# Clear The Screen
-###
-Clear-Host
-
-###
 # Configure The Appropriate Screen And Buffer Size To Make Sure Everything Fits Nicely
 ###
 $Global:Host.UI.RawUI.WindowTitle = '+++ CHECK CONNECTIVITY TARGETED DCS +++'
