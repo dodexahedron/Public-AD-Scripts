@@ -226,10 +226,8 @@ Clear-Host
 ###
 # Configure The Appropriate Screen And Buffer Size To Make Sure Everything Fits Nicely
 ###
-$randomNr = Get-Random -Minimum 1000 -Maximum 9999
-$windowTitle = "+++ CHECK CONNECTIVITY TARGETED DCS +++ ($randomNr)"
 $uiConfig = (Get-Host).UI.RawUI
-$Global:Host.UI.RawUI.WindowTitle = $windowTitle
+$Global:Host.UI.RawUI.WindowTitle = '+++ CHECK CONNECTIVITY TARGETED DCS +++'
 $Script:poshParentProcess = [System.Environment]::GetCurrentProcess()
 $poshParentProcessName = $poshParentProcess.ProcessName
 $poshParentProcessId = $poshParentProcess.Id
