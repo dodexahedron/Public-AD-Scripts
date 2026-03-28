@@ -231,12 +231,12 @@ $windowTitle = "+++ CHECK CONNECTIVITY TARGETED DCS +++ ($randomNr)"
 $uiConfig = (Get-Host).UI.RawUI
 $host.UI.RawUI.WindowTitle = $windowTitle
 Start-Sleep -s 1
-$poshProcess = Get-Process | Where-Object { $_.MainWindowTitle -eq $windowTitle }
-$poshProcessName = $poshProcess.ProcessName
-$poshProcessId = $poshProcess.Id
-If ($poshProcessName -eq "WindowsTerminal") {
-	Get-Process -Id $poshProcessId | Set-Window -X 100 -Y 100 -Width 1800 -Height 800 # -Passthru
-} ElseIf ($poshProcessName -like "*powershell_ise*") {
+$Script:poshParentProcess = [System.Environment]::GetCurrentProcess()
+$poshParentProcessName = $poshParentProcess.ProcessName
+$poshParentProcessId = $poshParentProcess.Id
+If ($poshParentProcessName -eq "WindowsTerminal") {
+	Get-Process -Id $poshParentProcessId | Set-Window -X 100 -Y 100 -Width 1800 -Height 800 # -Passthru
+} ElseIf ($poshParentProcessName -like "*powershell_ise*") {
 	Write-Host ""
 	Write-Host "The Script Is Being Executed From A PowerShell_ISE Command Prompt Window, Which IS NOT Supported!..." -ForeGroundColor Red
 	Write-Host "Please Rerun The Script From A PowerShell Command Prompt Window!..." -ForeGroundColor Red
